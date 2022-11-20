@@ -6,13 +6,13 @@
 
 (ns backend-tests.util-objects-map-test
   (:require
-   [backend-tests.helpers :as th]
+   [app.common.fressian :as fres]
    [app.common.spec :as us]
    [app.common.transit :as transit]
    [app.common.types.shape :as cts]
    [app.common.uuid :as uuid]
-   [app.util.fressian :as fres]
    [app.util.objects-map :as omap]
+   [backend-tests.helpers :as th]
    [clojure.pprint :refer [pprint]]
    [clojure.spec.alpha :as s]
    [clojure.test :as t]

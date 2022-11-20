@@ -2,9 +2,9 @@
  {org.clojure/clojure {:mvn/version "1.11.1"}
   org.clojure/data.json {:mvn/version "2.4.0"}
   org.clojure/tools.cli {:mvn/version "1.0.206"}
-  metosin/jsonista {:mvn/version "0.3.6"}
   org.clojure/clojurescript {:mvn/version "1.11.60"}
   org.clojure/test.check {:mvn/version "1.1.1"}
+  org.clojure/data.fressian {:mvn/version "1.0.0"}
 
   ;; Logging
   org.apache.logging.log4j/log4j-api {:mvn/version "2.19.0"}
@@ -17,7 +17,7 @@
   selmer/selmer {:mvn/version "1.12.55"}
   criterium/criterium {:mvn/version "0.4.6"}
 
-
+  metosin/jsonista {:mvn/version "0.3.6"}
   expound/expound {:mvn/version "0.9.0"}
   com.cognitect/transit-clj {:mvn/version "1.0.329"}
   com.cognitect/transit-cljs {:mvn/version "0.8.280"}

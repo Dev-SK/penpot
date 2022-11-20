@@ -8,6 +8,7 @@
   (:require
    [app.common.data :as d]
    [app.common.exceptions :as ex]
+   [app.common.fressian :as fres]
    [app.common.geom.matrix :as gmt]
    [app.common.logging :as l]
    [app.common.perf :as perf]
@@ -20,7 +21,6 @@
    [app.srepl.main :as srepl]
    [app.srepl.main :as srepl]
    [app.util.blob :as blob]
-   [app.util.fressian :as fres]
    [app.util.json :as json]
    [app.util.time :as dt]
    [clj-async-profiler.core :as prof]

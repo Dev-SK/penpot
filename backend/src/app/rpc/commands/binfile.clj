@@ -9,6 +9,7 @@
   (:require
    [app.common.data :as d]
    [app.common.exceptions :as ex]
+   [app.common.fressian :as fres]
    [app.common.logging :as l]
    [app.common.pages.migrations :as pmg]
    [app.common.spec :as us]
@@ -23,7 +24,6 @@
    [app.storage.tmp :as tmp]
    [app.tasks.file-gc]
    [app.util.blob :as blob]
-   [app.util.fressian :as fres]
    [app.util.pointer-map :as pmap]
    [app.util.services :as sv]
    [app.util.time :as dt]

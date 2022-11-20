@@ -14,6 +14,7 @@
    [app.common.geom.shapes :as gsh]
    [app.common.pages.common :refer [default-color]]
    [app.common.spec :as us]
+   [app.common.transit :as t]
    [app.common.types.color :as ctc]
    [app.common.types.shape.blur :as ctsb]
    [app.common.types.shape.export :as ctse]
