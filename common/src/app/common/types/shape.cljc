@@ -6,6 +6,7 @@
 
 (ns app.common.types.shape
   (:require
+   #?(:clj [app.common.fressian :as fres])
    [app.common.colors :as clr]
    [app.common.data :as d]
    [app.common.exceptions :as ex]
@@ -277,6 +278,7 @@
    :shapes []
    :hide-fill-on-export false})
 
+
 (def ^:private minimal-shapes
   [{:type :rect
     :name "Rect-1"
@@ -327,10 +329,11 @@
    {:type :svg-raw}])
 
 (def empty-selrect
-  {:x  0    :y  0
-   :x1 0    :y1 0
-   :x2 0.01    :y2 0.01
-   :width 0.01 :height 0.01})
+  (gsh/map->SelRect
+   {:x  0    :y  0
+    :x1 0    :y1 0
+    :x2 0.01    :y2 0.01
+    :width 0.01 :height 0.01}))
 
 (defn make-minimal-shape
   [type]
@@ -351,26 +354,20 @@
              :y 0
              :width 0.01
              :height 0.01
-             :selrect {:x 0
-                       :y 0
-                       :x1 0
-                       :y1 0
-                       :x2 0.01
-                       :y2 0.01
-                       :width 0.01
-                       :height 0.01}))))
+             :selrect empty-selrect))))
 
 (defn make-minimal-group
   [frame-id rect group-name]
-  {:id (uuid/next)
-   :type :group
-   :name group-name
-   :shapes []
-   :frame-id frame-id
-   :x (:x rect)
-   :y (:y rect)
-   :width (:width rect)
-   :height (:height rect)})
+  (gsh/map->Shape
+   {:id (uuid/next)
+    :type :group
+    :name group-name
+    :shapes []
+    :frame-id frame-id
+    :x (:x rect)
+    :y (:y rect)
+    :width (:width rect)
+    :height (:height rect)}))
 
 (defn setup-rect-selrect
   "Initializes the selrect and points for a shape."

@@ -44,7 +44,6 @@
                           (/ (:height draw-rect) (:height shape-rect)))
 
         movev (gpt/to-vec (gpt/point shape-rect) (gpt/point draw-rect))]
-
     (-> shape
         (assoc :click-draw? false)
         (gsh/transform-shape (-> (ctm/empty)

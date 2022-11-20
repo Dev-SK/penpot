@@ -71,11 +71,12 @@
         (gpr/setup-proportions)
         (assoc :frame-id frame-id
                :parent-id parent-id
-               :index index))))
+               :index index)
+        (gsh/map->Shape))))
 
 (defn add-shape
   ([attrs]
-   (add-shape attrs {}))
+   (add-shape attrs nil))
 
   ([attrs {:keys [no-select?]}]
    (us/verify ::shape-attrs attrs)

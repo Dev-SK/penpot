@@ -245,9 +245,9 @@
         ;; to have this width, height, x, y
         new-width  (max 0.01 (:width points-temp-dim))
         new-height (max 0.01 (:height points-temp-dim))
-        selrect    (gpr/center->selrect center new-width new-height)
+        selrect    (gco/center->selrect center new-width new-height)
 
-        rect-points  (gpr/rect->points selrect)
+        rect-points  (gco/selrect->points selrect)
         [matrix matrix-inverse] (calculate-adjust-matrix points-temp rect-points flip-x flip-y)]
 
     [selrect
@@ -377,12 +377,12 @@
         base-points (gco/transform-points points shape-center (:transform-inverse group (gmt/matrix)))
 
         ;; Defines the new selection rect with its transformations
-        new-points (-> (gpr/points->selrect base-points)
-                       (gpr/rect->points)
+        new-points (-> (gco/points->selrect base-points)
+                       (gco/selrect->points)
                        (gco/transform-points shape-center (:transform group (gmt/matrix))))
 
         ;; Calculate the new selrect
-        new-selrect (gpr/points->selrect base-points)]
+        new-selrect (gco/points->selrect base-points)]
 
     ;; Updates the shape and the applytransform-rect will update the other properties
     (-> group
@@ -474,24 +474,24 @@
 (defn transform-selrect
   [selrect modifiers]
   (-> selrect
-      (gpr/rect->points)
+      (gco/selrect->points)
       (transform-bounds modifiers)
-      (gpr/points->selrect)))
+      (gco/points->selrect)))
 
 (defn transform-selrect-matrix
   [selrect mtx]
   (-> selrect
-      (gpr/rect->points)
+      (gco/selrect->points)
       (gco/transform-points mtx)
-      (gpr/points->selrect)))
+      (gco/points->selrect)))
 
 (defn selection-rect
   "Returns a rect that contains all the shapes and is aware of the
   rotation of each shape. Mainly used for multiple selection."
   [shapes]
   (->> shapes
-       (map (comp gpr/points->selrect :points transform-shape))
-       (gpr/join-selrects)))
+       (map (comp gco/points->selrect :points transform-shape))
+       (gco/join-selrects)))
 
 (declare apply-group-modifiers)
 

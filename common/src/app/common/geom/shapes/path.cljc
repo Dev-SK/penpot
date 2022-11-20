@@ -334,7 +334,7 @@
                                     (->> (curve-extremities curve)
                                          (mapv #(curve-values curve %)))))
                   [])]
-     (gpr/points->selrect points))))
+     (gsc/points->selrect points))))
 
 (defn content->selrect [content]
   (let [calc-extremities
@@ -360,7 +360,7 @@
         extremities (mapcat calc-extremities
                             content
                             (concat [nil] content))]
-    (gpr/points->selrect extremities)))
+    (gsc/points->selrect extremities)))
 
 (defn move-content [content move-vec]
   (let [dx (:x move-vec)
@@ -978,7 +978,7 @@
         ;; through points
         selrect (-> points
                     (gsc/transform-points points-center transform-inverse)
-                    (gpr/points->selrect))]
+                    (gsc/points->selrect))]
     [points selrect]))
 
 (defn open-path?

@@ -296,6 +296,8 @@
         (recur modif-tree (rest sizing-auto-layouts)))
       modif-tree)))
 
+;; FIXME: performance improvements (implement using low level mutable
+;; operations (then combine with cljs-bean (?)))
 (defn set-objects-modifiers
   [modif-tree objects ignore-constraints snap-pixel?]
 

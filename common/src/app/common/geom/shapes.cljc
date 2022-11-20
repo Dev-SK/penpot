@@ -27,8 +27,8 @@
   rotation of each shape. Mainly used for multiple selection."
   [shapes]
   (->> shapes
-       (map (comp gpr/points->selrect :points))
-       (gpr/join-selrects)))
+       (map (comp gco/points->selrect :points))
+       (gco/join-selrects)))
 
 (defn translate-to-frame
   [shape {:keys [x y]}]
@@ -142,25 +142,27 @@
        (= val1 val2)))))
 
 ;; EXPORTS
-(dm/export gco/center-shape)
-(dm/export gco/center-selrect)
-(dm/export gco/center-rect)
+(dm/export gco/center->selrect)
 (dm/export gco/center-points)
+(dm/export gco/center-selrect)
+(dm/export gco/center-shape)
+(dm/export gco/join-selrects)
+(dm/export gco/make-selrect)
+(dm/export gco/map->SelRect)
+(dm/export gco/map->Shape)
+(dm/export gco/points->selrect)
 (dm/export gco/transform-points)
 
-(dm/export gpr/make-rect)
-(dm/export gpr/make-selrect)
-(dm/export gpr/rect->selrect)
-(dm/export gpr/rect->points)
-(dm/export gpr/points->selrect)
-(dm/export gpr/points->rect)
 (dm/export gpr/center->rect)
-(dm/export gpr/center->selrect)
-(dm/export gpr/join-rects)
-(dm/export gpr/join-selrects)
-(dm/export gpr/contains-selrect?)
-(dm/export gpr/contains-point?)
+(dm/export gpr/center-rect)
 (dm/export gpr/close-selrect?)
+(dm/export gpr/contains-point?)
+(dm/export gpr/contains-selrect?)
+(dm/export gpr/join-rects)
+(dm/export gpr/make-rect)
+(dm/export gpr/points->rect)
+(dm/export gpr/rect->points)
+(dm/export gpr/rect->selrect)
 
 (dm/export gtr/move)
 (dm/export gtr/absolute-move)

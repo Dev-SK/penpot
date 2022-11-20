@@ -7,7 +7,7 @@
 (ns app.common.geom.shapes.bounds
   (:require
    [app.common.data :as d]
-   [app.common.geom.shapes.rect :as gsr]
+   [app.common.geom.shapes.common :as gsc]
    [app.common.math :as mth]
    [app.common.pages.helpers :as cph]))
 
@@ -54,7 +54,7 @@
         filter-y (min y (+ y offset-y (- spread) (- blur) -5))
         filter-width (+ width (mth/abs offset-x) (* spread 2) (* blur 2) 10)
         filter-height (+ height (mth/abs offset-y) (* spread 2) (* blur 2) 10)]
-    (gsr/make-selrect filter-x filter-y filter-width filter-height)))
+    (gsc/make-selrect filter-x filter-y filter-width filter-height)))
 
 (defn get-rect-filter-bounds
   [selrect filters blur-value]
@@ -62,7 +62,7 @@
                            (filter #(= :drop-shadow (:type %)))
                            (map (partial calculate-filter-bounds selrect))
                            (concat [selrect])
-                           (gsr/join-selrects))
+                           (gsc/join-selrects))
         delta-blur (* blur-value 2)
 
         result
@@ -86,7 +86,7 @@
 
        (let [filters (shape->filters shape)
              blur-value (or (-> shape :blur :value) 0)]
-         (get-rect-filter-bounds (-> shape :points gsr/points->selrect) filters blur-value))))))
+         (get-rect-filter-bounds (-> shape :points gsc/points->selrect) filters blur-value))))))
 
 (defn calculate-padding
   ([shape]
@@ -152,7 +152,7 @@
 
                   [(calculate-base-bounds shape)]))
 
-        children-bounds (cond->> (gsr/join-selrects bounds)
+        children-bounds (cond->> (gsc/join-selrects bounds)
                           (not (cph/frame-shape? shape)) (or (:children-bounds shape)))
 
         filters (shape->filters shape)

@@ -9,6 +9,7 @@
    [app.common.data :as d]
    [app.common.data.macros :as dm]
    [app.common.geom.point :as gpt]
+   [app.common.geom.shapes.common :as gsc]
    [app.common.math :as mth]))
 
 (defn make-rect
@@ -32,20 +33,6 @@
         :width width
         :height height}))))
 
-(defn make-selrect
-  [x y width height]
-  (when (d/num? x y width height)
-    (let [width (max width 0.01)
-          height (max height 0.01)]
-      {:x x
-       :y y
-       :x1 x
-       :y1 y
-       :x2 (+ x width)
-       :y2 (+ y height)
-       :width width
-       :height height})))
-
 (defn close-rect?
   [rect1 rect2]
   (and (mth/close? (:x rect1) (:x rect2))
@@ -63,6 +50,12 @@
        (mth/close? (:y2 selrect1) (:y2 selrect2))
        (mth/close? (:width selrect1) (:width selrect2))
        (mth/close? (:height selrect1) (:height selrect2))))
+
+(defn center-rect
+  [{:keys [x y width height]}]
+  (when (d/num? x y width height)
+    (gpt/point (+ x (/ width 2.0))
+               (+ y (/ height 2.0)))))
 
 (defn rect->points [{:keys [x y width height]}]
   (when (d/num? x y)
@@ -114,13 +107,8 @@
          (gpt/point maxx maxy)
          (gpt/point minx maxy)]))))
 
-(defn points->selrect [points]
-  (when-let [rect (points->rect points)]
-    (let [{:keys [x y width height]} rect]
-      (make-selrect x y width height))))
-
 (defn rect->selrect [rect]
-  (-> rect rect->points points->selrect))
+  (-> rect rect->points gsc/points->selrect))
 
 (defn join-rects [rects]
   (when (d/not-empty? rects)
@@ -131,28 +119,12 @@
       (when (d/num? minx miny maxx maxy)
         (make-rect minx miny (- maxx minx) (- maxy miny))))))
 
-(defn join-selrects [selrects]
-  (when (d/not-empty? selrects)
-    (let [minx (transduce (keep :x1) min ##Inf selrects)
-          miny (transduce (keep :y1) min ##Inf selrects)
-          maxx (transduce (keep :x2) max ##-Inf selrects)
-          maxy (transduce (keep :y2) max ##-Inf selrects)]
-      (when (d/num? minx miny maxx maxy)
-        (make-selrect minx miny (- maxx minx) (- maxy miny))))))
-
 (defn center->rect [{:keys [x y]} width height]
   (when (d/num? x y width height)
     (make-rect (- x (/ width 2))
                (- y (/ height 2))
                width
                height)))
-
-(defn center->selrect [{:keys [x y]} width height]
-  (when (d/num? x y width height)
-    (make-selrect (- x (/ width 2))
-                  (- y (/ height 2))
-                  width
-                  height)))
 
 (defn s=
   [a b]
@@ -201,11 +173,3 @@
        (<= (:x2 sr2) (:x2 sr1))
        (>= (:y1 sr2) (:y1 sr1))
        (<= (:y2 sr2) (:y2 sr1))))
-
-(defn corners->selrect
-  [p1 p2]
-  (let [xp1 (:x p1)
-        xp2 (:x p2)
-        yp1 (:y p1)
-        yp2 (:y p2)]
-    (make-selrect (min xp1 xp2) (min yp1 yp2) (abs (- xp1 xp2)) (abs (- yp1 yp2)))))
