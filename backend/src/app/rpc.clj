@@ -23,6 +23,7 @@
    [app.storage :as-alias sto]
    [app.util.services :as sv]
    [app.util.time :as ts]
+   [app.worker :as-alias wrk]
    [clojure.spec.alpha :as s]
    [integrant.core :as ig]
    [promesa.core :as p]
@@ -269,6 +270,7 @@
                    ::http-client
                    ::rlimit
                    ::climit
+                   ::wrk/executor
                    ::mtx/metrics
                    ::db/pool
                    ::ldap]))
