@@ -12,7 +12,7 @@
    [app.db :as db]
    [app.http :as-alias http]
    [app.http.session :as-alias session]
-   [app.loggers.audit :as audit]
+   [app.loggers.audit :as aul]
    [app.metrics :as mtx]
    [app.msgbus :as-alias mbus]
    [app.rpc.climit :as climit]
@@ -143,30 +143,29 @@
     mdata))
 
 (defn- wrap-audit
-  [{:keys [audit] :as cfg} f mdata]
+  [{:keys [::aul/audit] :as cfg} f mdata]
   (if audit
-    (with-meta
-      (fn [cfg {:keys [::request] :as params}]
-        (p/finally (f cfg params)
-                   (fn [result _]
-                     (when result
-                       (let [resultm    (meta result)
-                             profile-id (or (::audit/profile-id resultm)
-                                            (:profile-id result)
-                                            (:profile-id params))
-                             props      (or (::audit/replace-props resultm)
-                                            (-> params
-                                                (merge (::audit/props resultm))
-                                                (dissoc :type)))]
-                         (audit :cmd :submit
-                                :type (or (::audit/type resultm)
-                                          (::type cfg))
-                                :name (or (::audit/name resultm)
-                                          (::sv/name mdata))
-                                :profile-id profile-id
-                                :ip-addr (some-> request audit/parse-client-ip)
-                                :props (dissoc props ::request)))))))
-      mdata)
+    (-> (fn [cfg {:keys [::request] :as params}]
+          (p/finally (f cfg params)
+                     (fn [result _]
+                       (when result
+                         (let [resultm    (meta result)
+                               profile-id (or (::audit/profile-id resultm)
+                                              (:profile-id result)
+                                              (:profile-id params))
+                               props      (or (::audit/replace-props resultm)
+                                              (-> params
+                                                  (merge (::audit/props resultm))
+                                                  (dissoc :type)))]
+                           (aul/submit! audit
+                                        :type (or (::audit/type resultm)
+                                                  (::type cfg))
+                                        :name (or (::audit/name resultm)
+                                                  (::sv/name mdata))
+                                        :profile-id profile-id
+                                        :ip-addr (some-> request audit/parse-client-ip)
+                                        :props (dissoc props ::request)))))))
+        (with-meta mdata))
     f))
 
 (defn- wrap

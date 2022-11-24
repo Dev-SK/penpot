@@ -10,6 +10,7 @@
    [app.common.logging :as l]
    [app.config :as cf]
    [app.db :as-alias db]
+   [app.loggers.audit :as-alias audit]
    [app.metrics :as-alias mtx]
    [app.metrics.definition :as-alias mdef]
    [app.redis :as-alias rds]
@@ -98,6 +99,24 @@
    {::mdef/name "penpot_rpc_climit_timing"
     ::mdef/help "Summary of the time between queuing and executing on the CLIMIT"
     ::mdef/labels ["name"]
+    ::mdef/type :summary}
+
+   :audit-queue-size
+   {::mdef/name "penpot_audit_queue_size"
+    ::mdef/help "Current number of queued submissions on the audit log processor"
+    ::mdef/labels []
+    ::mdef/type :gauge}
+
+   :audit-concurrency
+   {::mdef/name "penpot_audit_concurrency"
+    ::mdef/help "Current number of used concurrency capacity on the audit log processor"
+    ::mdef/labels []
+    ::mdef/type :gauge}
+
+   :audit-timing
+   {::mdef/name "penpot_audit_timing"
+    ::mdef/help "Summary of the time between queuing and executing on the audit log processor"
+    ::mdef/labels []
     ::mdef/type :summary}
 
    :executors-active-threads
@@ -278,7 +297,7 @@
     :metrics       (ig/ref ::mtx/metrics)
     :public-uri    (cf/get :public-uri)
     :storage       (ig/ref ::sto/storage)
-    :audit-handler (ig/ref :app.loggers.audit/http-handler)
+    :audit-handler (ig/ref ::audit/http-handler)
     :rpc-routes    (ig/ref :app.rpc/routes)
     :doc-routes    (ig/ref :app.rpc.doc/routes)
     :executor      (ig/ref ::wrk/executor)}
@@ -323,7 +342,7 @@
     :msgbus      (ig/ref :app.msgbus/msgbus)
     :public-uri  (cf/get :public-uri)
     :redis       (ig/ref ::rds/redis)
-    :audit       (ig/ref :app.loggers.audit/collector)
+    :audit       (ig/ref ::audit/collector)
     :ldap        (ig/ref :app.auth.ldap/provider)
     :http-client (ig/ref :app.http/client)
     :climit      (ig/ref :app.rpc/climit)
@@ -350,8 +369,8 @@
      :tasks-gc           (ig/ref :app.tasks.tasks-gc/handler)
      :telemetry          (ig/ref :app.tasks.telemetry/handler)
      :session-gc         (ig/ref :app.http.session/gc-task)
-     :audit-log-archive  (ig/ref :app.loggers.audit/archive-task)
-     :audit-log-gc       (ig/ref :app.loggers.audit/gc-task)}}
+     :audit-log-archive  (ig/ref ::audit/archive-task)
+     :audit-log-gc       (ig/ref ::audit/gc-task)}}
 
 
    :app.emails/sendmail
@@ -403,21 +422,22 @@
    :app.loggers.zmq/receiver
    {:endpoint (cf/get :loggers-zmq-uri)}
 
-   :app.loggers.audit/http-handler
+   ::audit/http-handler
    {:pool     (ig/ref ::db/pool)
     :executor (ig/ref ::wrk/executor)}
 
-   :app.loggers.audit/collector
-   {:pool     (ig/ref ::db/pool)
-    :executor (ig/ref ::wrk/executor)}
+   ::audit/collector
+   {::db/pool           (ig/ref ::db/pool)
+    ::wrk/executor      (ig/ref ::wrk/executor)
+    ::audit/concurrency (cf/get :audit-log-concurrency)}
 
-   :app.loggers.audit/archive-task
+   ::audit/archive-task
    {:uri         (cf/get :audit-log-archive-uri)
     :sprops      (ig/ref :app.setup/props)
     :pool        (ig/ref ::db/pool)
     :http-client (ig/ref :app.http/client)}
 
-   :app.loggers.audit/gc-task
+   ::audit/gc-task
    {:pool (ig/ref ::db/pool)}
 
    :app.loggers.loki/reporter

@@ -100,6 +100,7 @@
 (s/def ::telemetry-enabled ::us/boolean)
 
 (s/def ::audit-log-archive-uri ::us/string)
+(s/def ::audit-log-concurrency ::us/integer)
 
 (s/def ::admins ::us/set-of-strings)
 (s/def ::file-change-snapshot-every ::us/integer)
@@ -205,6 +206,7 @@
                    ::admins
                    ::allow-demo-users
                    ::audit-log-archive-uri
+                   ::audit-log-concurrency
                    ::auth-token-cookie-name
                    ::auth-token-cookie-max-age
                    ::authenticated-cookie-name

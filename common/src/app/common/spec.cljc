@@ -428,3 +428,11 @@
      (binding [s/*explain-out* expound/printer]
        (with-out-str
          (s/explain-out (update data ::s/problems #(take max-problems %))))))))
+
+(defn validation-error?
+  [cause]
+  (if (and (map? cause) (= :spec-validation (:type cause)))
+    cause
+    (when (ex/ex-info? cause)
+      (validation-error? (ex-data cause)))))
+

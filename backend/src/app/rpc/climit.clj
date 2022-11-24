@@ -64,7 +64,7 @@
                             :key (name bkey)
                             :skey (str skey)
                             :queue-size (get instance :current-queue-size)
-                            :concurrency (get instance :current-concurrency)
+                            :concurrency (get instance :current-concurrency))
                    (mtx/run! metrics
                              :id :rpc-climit-queue-size
                              :val (get instance :current-queue-size)
@@ -72,7 +72,7 @@
                    (mtx/run! metrics
                              :id :rpc-climit-concurrency
                              :val (get instance :current-concurrency)
-                             :labels labels)))
+                             :labels labels))
 
         on-run   (fn [instance task]
                    (let [elapsed (- (inst-ms (dt/now))
